@@ -10,7 +10,7 @@ export const QueueViewer = ()=>{
     //   const eventSource = new EventSource(`http://${HOST}:${PORT}/`);
     //   const eventSource = new EventSource(`http://localhost:3000/event`);
   
-      const sse = new EventSource('http://localhost:3000/event')
+    const sse = new EventSource('http://localhost:3000/event')
     sse.onmessage = e => {
        console.log("e : ", e) 
     }

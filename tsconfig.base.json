@@ -16,7 +16,8 @@
     "baseUrl": ".",
     "paths": {
       "@test-boilerplate/errors": ["packages/errors/src/index.ts"],
-      "@test-boilerplate/queue": ["packages/queue/src/index.ts"]
+      "@test-boilerplate/queue": ["packages/queue/src/index.ts"],
+      "@test-boilerplate/responses": ["packages/responses/src/index.ts"]
     },
     "strictNullChecks": true,
     "resolveJsonModule": true
