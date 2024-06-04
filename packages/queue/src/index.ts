@@ -1,4 +1,4 @@
-import * as action from './lib/action/action'
-import * as queue from './lib/queue/queue'
+import {Action} from './lib/action/action'
+import {Queue} from './lib/queue/queue'
 
-export {action, queue}
+export {Action, Queue};

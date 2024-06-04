@@ -1,7 +1,11 @@
-import { Action } from "packages/queue/src/lib/action/action";
-import { Queue } from "packages/queue/src/lib/queue/queue";
+import { Queue, Action } from "@test-boilerplate/queue";
 
 export interface InitResponse{
   queue : Queue 
   actions : Action[]
 }
+
+export type ConsumedActionResponse = 
+|{type : "success", action : Action}
+|{type : "error", message : string }
+

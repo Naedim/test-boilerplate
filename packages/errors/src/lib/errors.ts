@@ -1,15 +1,13 @@
-export class GeneralPurposeErorr extends Error{
+export class GeneralPurposeError extends Error{
  constructor(){
   super("An error occured, our engineer are working on it. Pls come back later or contact our great support divison !") 
  }
 }
 
 export class CustomError extends Error{
-
  constructor(message : string){
   super(message) 
  }
-  
 }
 
 export class WrongAttributes extends CustomError{
