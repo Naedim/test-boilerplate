@@ -6,6 +6,7 @@ export interface InitResponse{
 }
 
 export type ConsumedActionResponse = 
-|{type : "success", action : Action}
+|{type : "consumption", action : Action}
+|{type : "reset", actionsList : Action[]}
 |{type : "error", message : string }
 

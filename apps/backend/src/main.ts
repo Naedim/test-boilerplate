@@ -45,8 +45,8 @@ const sendEvent = (data: ConsumedActionResponse, res) => {
   res.write(`data: ${JSON.stringify(data)}\n\n`);
 };
 
-// manage to send to the client the event of consuming an action in the queue
-app.get('/action-consumption-events', (req, res) => {
+// send the periodic events to the client (action comsumption or actions's credits resets)
+app.get('/action-events', (req, res) => {
   res.setHeader('Content-Type', 'text/event-stream');
   res.setHeader('Cache-Control', 'no-cache');
   res.setHeader('Connection', 'keep-alive');
@@ -57,7 +57,7 @@ app.get('/action-consumption-events', (req, res) => {
       const consumedAction = QueueStore.queue.consumeFirstActionCredits();
       if (consumedAction) {
         const response: ConsumedActionResponse = {
-          type: 'success',
+          type: 'consumption',
           action: consumedAction,
         };
         sendEvent(response, res);
@@ -74,39 +74,36 @@ app.get('/action-consumption-events', (req, res) => {
       }
     }
   };
+  
+  const resetActions = () => {
+    QueueStore.actions.forEach(
+      (action) => (action.credits = generateCredit(maxCredit))
+    );
+
+    const response: ConsumedActionResponse = {
+      type: 'reset',
+      actionsList: QueueStore.actions,
+    };
+    sendEvent(response, res);
+  };
 
   const actionConsumptionLoopId = setInterval(() => {
     consumeAction();
   }, 3000);
 
-  // Cleans up when the client closes the connection
-  req.on('close', () => {
-    console.log('Connection was closed');
-    clearInterval(actionConsumptionLoopId);
-    res.end();
-  });
-});
-
-app.get('/action-credits-reset-events', (req, res) => {
-  res.setHeader('Content-Type', 'text/event-stream');
-  res.setHeader('Cache-Control', 'no-cache');
-  res.setHeader('Connection', 'keep-alive');
-
-  const resetActions = () => {
-    QueueStore.actions.forEach(
-      (action) => (action.credits = generateCredit(maxCredit))
-    );
-  };
 
   const actionCreditsResetLoopId = setInterval(() => {
     resetActions();
-  }, 30000);
+  }, 10000);
 
+  // Cleans up when the client closes the connection
   req.on('close', () => {
     console.log('Connection was closed');
     clearInterval(actionCreditsResetLoopId);
+    clearInterval(actionConsumptionLoopId);
     res.end();
   });
+
 });
 
 app.listen(port, host, () => {
