@@ -21,3 +21,9 @@ export class NoCreditRemaining extends CustomError{
     super(`no credit remaining for the action ${actionName}`)
   }
 }
+
+export class UnknownActionInSavedQueue extends CustomError{
+  constructor(actionName : string){
+    super(`An unknown action is has been found in the saved queue : ${actionName}`)
+  }
+}

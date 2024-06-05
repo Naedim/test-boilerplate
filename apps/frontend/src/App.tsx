@@ -19,16 +19,17 @@ export const App = () => {
       // listen to action comsumption events from the server
       const sse = new EventSource('http://localhost:3000/action-consumption-events')
       sse.onmessage = e => {
-        const response  : ConsumedActionResponse= JSON.parse(e.data)
+        const response: ConsumedActionResponse = JSON.parse(e.data)
         console.log("casted e : ", response)
-        if(response.type === 'error'){
-        console.log("Error", response)
-          alert(response.message)
+        if (response.type === 'error') {
+          console.log("Error", response)
+          // alert(response.message)
+          console.error(response.message)
         }
-        else if(response.type === "success"){
+        else if (response.type === "success") {
 
-        console.log("Response", response)
-        }else{
+          console.log("Response", response)
+        } else {
           console.log("WTF")
         }
 
@@ -39,10 +40,15 @@ export const App = () => {
   }, [])
 
   return (
-    <>
-      {actions.forEach((ac: Action) => {
-        <p>{ac.name}</p>
+    <div className="h-screen w-screen">
+
+      <p>TEST</p>
+      <ul>
+
+      </ul>
+      {actions.map((action: Action) => {
+        return <p>{action.name}</p>
       })}
-    </>
+    </div>
   )
 }
