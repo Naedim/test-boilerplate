@@ -3,6 +3,7 @@ import * as ReactDOM from 'react-dom/client';
 import '../styles/globals.css';
 // import { StrictMode } from 'react';
 import { App } from './App';
+import { QueueProvider } from './contexts/queueContext';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') ?? document.body
@@ -10,6 +11,8 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   // <StrictMode>
-    <App/>
+    <QueueProvider>
+      <App />
+    </QueueProvider>
   // </StrictMode>
 );

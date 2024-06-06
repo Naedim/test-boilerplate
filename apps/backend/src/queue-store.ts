@@ -31,7 +31,6 @@ class QueueStore {
 
   private constructor() {
     this.initData();
-    console.log('queue action  : ', this.queue.list);
   }
 
   public static getInstance(): QueueStore {
@@ -57,26 +56,28 @@ class QueueStore {
   }
 
   public consumeAction() {
-    return this.queue.consumeFirstActionCredits();
+    const consumedAction = this.queue.consumeFirstActionCredits();
+    // this.save()
+    return consumedAction
   }
 
   public addAction(actionName: string) {
     const action = this.actions.find((a) => a.name === actionName);
-    if (action) {
-      this.queue.addAction(action);
-      return;
-    }
-    throw new UnknownAction(actionName);
-  }
-  public save() {
-    console.log('Store calling data save');
-    fs.writeFileSync(dataFile, JSON.stringify(this.getState()), 'utf-8');
+    if(!action) throw new UnknownAction(actionName);
+    
+    this.queue.addAction(action);
+    // this.save();
+    return;
   }
 
   public resetActions() {
     this.actions.forEach(
       (action) => (action.credits = generateCredit(maxCredit))
     );
+    // this.save()
+  }
+  public save() {
+    fs.writeFileSync(dataFile, JSON.stringify(this.getState()), 'utf-8');
   }
 
   /**
@@ -87,7 +88,10 @@ class QueueStore {
   public initData() {
     if (!fs.existsSync(dataFile)) {
       this.actions = defaultActions;
+      this.queue = new Queue()
+      return
     }
+      this.actions = defaultActions;
     const data: QueueStateResponse = JSON.parse(
       fs.readFileSync(dataFile, 'utf-8')
     );

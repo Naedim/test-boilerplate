@@ -1,37 +1,39 @@
 import { ConsumedActionResponse, QueueStateResponse } from '@test-boilerplate/responses';
 import { Action } from 'packages/queue/src/lib/action/action';
-import { Queue } from 'packages/queue/src/lib/queue/queue';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect } from 'react';
+import { QueueContext } from './contexts/queueContext';
 
 export const App = () => {
-  const [actions, setActions] = useState<Action[]>([])
-  const [queue, setQueue] = useState<Queue>()
+  // const [actions, setActions] = useState<Action[]>([])
+  // const [queue, setQueue] = useState<Queue>()
+
+  const {actions, setActions, queue, setQueue, consumeFirstActionCredits} = useContext(QueueContext)
 
   useEffect(() => {
     //init the state of actions and queue
     fetch("http://localhost:3000/").then(res => {
       res.json().then((data: QueueStateResponse) => {
         setActions(data.actions);
-        setQueue(queue)
+        setQueue(data.queue)
+
       })
     }).then(() => {
       // listen to action comsumption events from the server
-      const sse = new EventSource('http://localhost:3000/action-events')
+      const sse = new EventSource('http://localhost:3000/events/actions')
       sse.onmessage = e => {
         const response: ConsumedActionResponse = JSON.parse(e.data)
-        console.log("casted e : ", response)
 
-        switch(response.type){
-          case "error" :
+        switch (response.type) {
+          case "error":
             console.error(response.message)
             break;
 
-          case "consumption" :
-            console.log("consumption of action : ", response.action)
+          case "consumption":
+            consumeFirstActionCredits(response.action.name)
             break;
 
-          case "reset" :
-            console.log("reset of actions's credits : ", response.actionsList)
+          case "reset":
+            setActions(response.actionsList)
             break;
 
         }
@@ -43,9 +45,16 @@ export const App = () => {
 
   return (
     <div className="h-screen w-screen">
-      {actions.map((action: Action) => {
-        return <p key = {action.name}>{action.name}</p>
-      })}
+
+        {actions.map((action: Action) => {
+          return <p key={action.name}>{action.name} {action.credits}</p>
+        })}
+        
+        <div className = "flex gap-2">
+        {queue.map((actionName, index) => {
+          return <p key={index}>{actionName}</p>
+        })}
+        </div>
     </div>
   )
 }

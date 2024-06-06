@@ -7,8 +7,6 @@ const router = Router();
 
 //function used to send event to the client
 const sendEvent = (data: ConsumedActionResponse, res) => {
-  console.log('stringified data : ', data);
-  console.log();
   res.write(`data: ${JSON.stringify(data)}\n\n`);
 };
 
@@ -40,7 +38,7 @@ router.get('/actions', (req, res) => {
         consumeAction();
       }
       else{
-        console.log
+        console.error(err)
       }
     }
   };
