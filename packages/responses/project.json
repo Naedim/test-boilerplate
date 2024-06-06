@@ -1,0 +1,19 @@
+{
+  "name": "responses",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/responses/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/responses",
+        "main": "packages/responses/src/index.ts",
+        "tsConfig": "packages/responses/tsconfig.lib.json",
+        "assets": ["packages/responses/*.md"]
+      }
+    }
+  }
+}
