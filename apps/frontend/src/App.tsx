@@ -1,5 +1,4 @@
-import { ConsumedActionResponse } from '@test-boilerplate/responses';
-import { InitResponse } from '@test-boilerplate/responses';
+import { ConsumedActionResponse, QueueStateResponse } from '@test-boilerplate/responses';
 import { Action } from 'packages/queue/src/lib/action/action';
 import { Queue } from 'packages/queue/src/lib/queue/queue';
 import { useEffect, useState } from 'react';
@@ -11,28 +10,31 @@ export const App = () => {
   useEffect(() => {
     //init the state of actions and queue
     fetch("http://localhost:3000/").then(res => {
-      res.json().then((data: InitResponse) => {
+      res.json().then((data: QueueStateResponse) => {
         setActions(data.actions);
         setQueue(queue)
       })
     }).then(() => {
       // listen to action comsumption events from the server
-      const sse = new EventSource('http://localhost:3000/action-consumption-events')
+      const sse = new EventSource('http://localhost:3000/action-events')
       sse.onmessage = e => {
         const response: ConsumedActionResponse = JSON.parse(e.data)
         console.log("casted e : ", response)
-        if (response.type === 'error') {
-          console.log("Error", response)
-          // alert(response.message)
-          console.error(response.message)
-        }
-        else if (response.type === "success") {
 
-          console.log("Response", response)
-        } else {
-          console.log("WTF")
-        }
+        switch(response.type){
+          case "error" :
+            console.error(response.message)
+            break;
 
+          case "consumption" :
+            console.log("consumption of action : ", response.action)
+            break;
+
+          case "reset" :
+            console.log("reset of actions's credits : ", response.actionsList)
+            break;
+
+        }
       }
     }).catch((err: Error) => {
       console.error("Error while connecting to the server : ", err.message);
@@ -41,13 +43,8 @@ export const App = () => {
 
   return (
     <div className="h-screen w-screen">
-
-      <p>TEST</p>
-      <ul>
-
-      </ul>
       {actions.map((action: Action) => {
-        return <p>{action.name}</p>
+        return <p key = {action.name}>{action.name}</p>
       })}
     </div>
   )

@@ -22,8 +22,8 @@ export class NoCreditRemaining extends CustomError{
   }
 }
 
-export class UnknownActionInSavedQueue extends CustomError{
+export class UnknownAction extends CustomError{
   constructor(actionName : string){
-    super(`An unknown action is has been found in the saved queue : ${actionName}`)
+    super(`An unknown action has been found: ${actionName}`)
   }
 }

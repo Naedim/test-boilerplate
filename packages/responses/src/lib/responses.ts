@@ -1,7 +1,11 @@
-import { Queue, Action } from "@test-boilerplate/queue";
+import {Action } from "@test-boilerplate/queue";
 
-export interface InitResponse{
-  queue : Queue 
+/**
+ * @field queue : a list of action's names that represent the order of actions in the queue
+ * @field actions : the exisiting actions
+ */
+export interface QueueStateResponse{
+  queue : string[] 
   actions : Action[]
 }
 

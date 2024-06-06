@@ -1,14 +1,5 @@
 {
-  "queue": {
-    "list": [
-      { "name": "A", "credits": 1 },
-      { "name": "A", "credits": 1 },
-      { "name": "A", "credits": 1 },
-      { "name": "B", "credits": 10 },
-      { "name": "B", "credits": 10 },
-      { "name": "C", "credits": 10 }
-    ]
-  },
+  "queue": [ "A", "A", "A", "B", "B", "C" ],
   "actions": [
     { "name": "A", "credits": 1 },
     { "name": "B", "credits": 10 },
