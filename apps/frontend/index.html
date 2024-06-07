@@ -11,8 +11,18 @@
       rel="stylesheet"
     />
   </head>
-  <body>
+  <body className = "overscroll-none">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
+
+  <style>
+   * {
+  margin: 0;
+  padding: 0;
+  text-decoration: none;
+  list-style: none;
+  overscroll-behavior: none;
+} 
+  </style>
 </html>
