@@ -1,9 +1,9 @@
-import { Action } from "@test-boilerplate/queue";
+import { ActionAttributes } from "packages/queue/src/lib/action/action";
 import { createContext, useState } from "react";
 
 export const QueueContext = createContext<{
-    actions: Action[];
-    setActions: React.Dispatch<React.SetStateAction<Action[]>>;
+    actions: ActionAttributes[];
+    setActions: React.Dispatch<React.SetStateAction<ActionAttributes[]>>;
     queue: string[];
     setQueue: React.Dispatch<React.SetStateAction<string[]>>;
     addAction: (actionName: string) => void;
@@ -18,7 +18,7 @@ export const QueueContext = createContext<{
 });
 
 export const QueueProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const [actions, setActions] = useState<Action[]>([]);
+    const [actions, setActions] = useState<ActionAttributes[]>([]);
     const [queue, setQueue] = useState<string[]>([]);
 
     const addAction = (actionName: string) => {

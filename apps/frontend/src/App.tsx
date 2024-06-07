@@ -1,5 +1,5 @@
 import { ConsumedActionResponse, QueueStateResponse } from '@test-boilerplate/responses';
-import { Action } from 'packages/queue/src/lib/action/action';
+import { ActionAttributes } from 'packages/queue/src/lib/action/action';
 import { useContext, useEffect } from 'react';
 import { QueueContext } from './contexts/queueContext';
 
@@ -62,7 +62,7 @@ export const App = () => {
 
         {/* list of available actions */}
         <div className='pt-4'>
-          <p className = "text-center text-lg font-semibold mb-4">Click on an action to add it to the queue</p>
+          <p className="text-center text-lg font-semibold mb-4">Click on an action to add it to the queue</p>
           <ActionList />
         </div>
         {/* button to add a new action */}
@@ -86,15 +86,20 @@ const Queue = () => {
 }
 
 const ActionList = () => {
-  const { actions } = useContext(QueueContext)
+  // const { actions } = useContext(QueueContext)
+  const actions : ActionAttributes[] = [
+    { name: "A", credits: 1 },
+    { name: "B", credits: 9 },
+    { name: "C", credits: 9 }
+  ]
   return (
     <div className='flex h-full items-center justify-center flex-wrap gap-6'>
-      {actions.map((action: Action) => <ActionCard action={action} />)}
+      {actions.map((action: ActionAttributes) => <ActionCard action={action} />)}
     </div>
   )
 }
 
-const ActionCard = ({ action }: { action: Action }) => {
+const ActionCard = ({ action }: { action: ActionAttributes }) => {
   const { addAction } = useContext(QueueContext)
   return (
     <button className='hover:scale-x-110 transition-transform duration-200 focus:scale-110' onClick={() => addAction(action.name)}>
