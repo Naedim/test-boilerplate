@@ -7,7 +7,7 @@ export const App = () => {
   // const [actions, setActions] = useState<Action[]>([])
   // const [queue, setQueue] = useState<Queue>()
 
-  const {actions, setActions, queue, setQueue, consumeFirstActionCredits} = useContext(QueueContext)
+  const { setActions, setQueue, consumeFirstActionCredits } = useContext(QueueContext)
 
   useEffect(() => {
     //init the state of actions and queue
@@ -44,17 +44,73 @@ export const App = () => {
   }, [])
 
   return (
-    <div className="h-screen w-screen">
 
-        {actions.map((action: Action) => {
-          return <p key={action.name}>{action.name} {action.credits}</p>
-        })}
-        
-        <div className = "flex gap-2">
-        {queue.map((actionName, index) => {
-          return <p key={index}>{actionName}</p>
-        })}
+
+
+    <div className="h-screen w-screen bg-gradient-to-r from-sky-100 to-sky-200">
+      {/* title of the app  */}
+      <div className='w-full  m-auto bg-gradient-to-r from-violet-300 to-blue-300  p-2 flex flex-col items-center'>
+        <h1 className='text-3xl font-bold text-violet-700'>Action Queue App</h1>
+        <p className='font-bold'>Damien NOEL </p>
+      </div>
+
+      {/* main content */}
+      <div className='px-4 h-full'>
+
+        {/* action queue */}
+        <Queue />
+
+        {/* list of available actions */}
+        <div className='mt-4'>
+
+          <ActionList />
         </div>
+        {/* button to add a new action */}
+
+        <div className="flex gap-2">
+          {/* <p className = "text-5xl font-bold"> Faites de LinkedIn votre canal d’acquisition n°1</p> */}
+        </div>
+      </div>
     </div>
   )
+}
+
+const Queue = () => {
+  const { queue } = useContext(QueueContext)
+
+  return (
+    queue.map((actionName, index) => {
+      return <p key={index}>{actionName}</p>
+    })
+  )
+}
+
+const ActionList = () => {
+  const { actions } = useContext(QueueContext)
+  return (
+    <div className='flex h-full items-center justify-around flex-wrap'>
+      {actions.map((action: Action) => <ActionCard action={action} />)}
+    </div>
+  )
+}
+
+const ActionCard = ({ action }: { action: Action }) => {
+  return (
+    <div>
+      {/* action card */}
+      <div className='bg-white rounded h-32 w-32'>
+        {/* card name header */}
+        <div className='h-12 rounded-t bg-gradient-to-r from-violet-300 to-blue-300 flex justify-center items-center font-bold text-xl text-violet-800'>
+          <label>{action.name}</label>
+        </div>
+        {/* card credits */}
+        <div className='h-full w-full flex justify-center items-center'>
+          <label className='text-xl font-bold color'>{action.credits}</label>
+        </div>
+      </div>
+
+      {/* <button className="h-14 bg-gradient-to-r from-blue-700 to-teal-500 px-6 py-2 rounded-lg  text-xl font-semibold text-white hover:from-purple-700 hover:to-blue-500 transition-all duration-300">Edit profile</button> */}
+    </div>
+  )
+
 }
