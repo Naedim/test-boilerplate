@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext} from 'react';
 import { QueueContext } from './contexts/queueContext';
 import { ActionCard } from './components/action-card';
 import { Queue } from './components/queue';
@@ -13,11 +13,21 @@ export const App = () => {
 
   return (
     <ActionEventListener>
-      <div className="h-screen w-screen bg-gradient-to-r from-sky-100 to-sky-200">
-        {/* title of the app  */}
-        <div className='bg-gradient-to-r from-violet-300 to-blue-300  p-2 flex flex-col items-center'>
-          <h1 className='text-3xl font-bold text-violet-700'>Action Queue App</h1>
-          <p className='font-bold'>Damien NOEL </p>
+    <div className="h-screen w-screen bg-gradient-to-r from-sky-100 to-sky-200">
+      {/* title of the app  */}
+      <div className='bg-gradient-to-r from-violet-300 to-blue-300  p-2 flex flex-col items-center'>
+        <h1 className='text-3xl font-bold text-violet-700'>Action Queue App</h1>
+        <p className='font-bold'>Damien NOEL </p>
+      </div>
+
+      {/* main content */}
+      <div className='px-4'>
+
+
+        {/* action queue */}
+        <div className='mt-4'>
+          <p className="text-center text-lg font-semibold">Action Queue</p>
+          <Queue />
         </div>
 
         {/* main content */}
@@ -41,6 +51,7 @@ export const App = () => {
           </div>
         </div>
       </div>
+    </div>
     </ActionEventListener>
   )
 }
