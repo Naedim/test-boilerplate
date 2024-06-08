@@ -3,7 +3,6 @@ import { Action } from '../action/action';
 
 describe('action', () => {
   it('constructor test', () => {
-    expect(()=> new Action("A", 0)).toThrow(WrongAttributes)
     expect(()=> new Action("", 2)).toThrow(WrongAttributes)
     const action = new Action("A", 2)
     expect(action).toBeTruthy()

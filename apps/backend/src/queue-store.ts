@@ -22,6 +22,9 @@ const defaultActions = [
   new Action('A', generateCredit(maxCredit)),
   new Action('B', generateCredit(maxCredit)),
   new Action('C', generateCredit(maxCredit)),
+  new Action('D', generateCredit(maxCredit)),
+  new Action('E', generateCredit(maxCredit)),
+  new Action('F', generateCredit(maxCredit)),
 ];
 
 class QueueStore {
@@ -45,19 +48,19 @@ class QueueStore {
   }
 
   public getActionQueue() {
-    return this.queue.list;
+    return this.queue.getList();
   }
 
   public getState(): QueueStateResponse {
     return {
-      queue: this.queue.list.map((ac) => ac.name),
+      queue: this.queue.getList().map((ac) => ac.name),
       actions: this.actions,
     };
   }
 
   public consumeAction() {
     const consumedAction = this.queue.consumeFirstActionCredits();
-    // this.save()
+    this.save()
     return consumedAction
   }
 
@@ -66,7 +69,9 @@ class QueueStore {
     if(!action) throw new UnknownAction(actionName);
     
     this.queue.addAction(action);
-    // this.save();
+    console.log("added action : ", actionName)
+    console.log("queue : ", this.queue)
+    this.save();
     return;
   }
 
@@ -74,9 +79,10 @@ class QueueStore {
     this.actions.forEach(
       (action) => (action.credits = generateCredit(maxCredit))
     );
-    // this.save()
+    this.save()
   }
   public save() {
+    // console.log("Saving state : ", this.getState())
     fs.writeFileSync(dataFile, JSON.stringify(this.getState()), 'utf-8');
   }
 

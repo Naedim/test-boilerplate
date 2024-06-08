@@ -8,13 +8,15 @@ export const QueueContext = createContext<{
     setQueue: React.Dispatch<React.SetStateAction<string[]>>;
     addAction: (actionName: string) => void;
     consumeFirstActionCredits: (actionName: string) => void;
+    removeActionOccurrences: (actionName : string) =>void;
 }>({
     actions: [],
     setActions: () => [],
     queue: [],
     setQueue: () => [],
     addAction: () => { return },
-    consumeFirstActionCredits: () => { return }
+    consumeFirstActionCredits: () => { return },
+    removeActionOccurrences: () =>{return}
 });
 
 export const QueueProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -26,6 +28,7 @@ export const QueueProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     };
 
     const consumeFirstActionCredits = (actionName: string) => {
+        console.log("actionName : ", actionName)
 
         //removing the first action which name is actionName and all the ones before
         setQueue((prevQueue) => {
@@ -47,8 +50,21 @@ export const QueueProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         })
     };
 
+    /**
+     * remove all occurence of the given action until the list is empty 
+     * or another action is found
+     */
+    const removeActionOccurrences = (actionName : string)=>{
+
+        setQueue((prevQueue) => {
+            const actionIndex = prevQueue.findIndex((name) => name !== actionName);
+            if(actionIndex === undefined) return []
+            return prevQueue.slice(actionIndex + 1); // Create a new array
+        });
+    }
+
     return (
-        <QueueContext.Provider value={{ actions, setActions, queue, setQueue, addAction, consumeFirstActionCredits }}>
+        <QueueContext.Provider value={{ actions, setActions, queue, setQueue, addAction, consumeFirstActionCredits, removeActionOccurrences}}>
             {children}
         </QueueContext.Provider>
     );

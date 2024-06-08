@@ -1,12 +1,12 @@
-import { ConsumedActionResponse } from '@test-boilerplate/responses';
+import { ConsumeActionResponse } from '@test-boilerplate/responses';
 import { Router } from 'express';
 import queueStore from '../queue-store';
-import { CustomError } from '@test-boilerplate/errors';
+import { CustomError, NoCreditRemaining } from '@test-boilerplate/errors';
 
 const router = Router();
 
 //function used to send event to the client
-const sendEvent = (data: ConsumedActionResponse, res) => {
+const sendEvent = (data: ConsumeActionResponse, res) => {
   res.write(`data: ${JSON.stringify(data)}\n\n`);
 };
 
@@ -21,19 +21,29 @@ router.get('/actions', (req, res) => {
     try {
       const consumedAction = queueStore.consumeAction();
       if (consumedAction) {
-        const response: ConsumedActionResponse = {
+        const response: ConsumeActionResponse = {
           type: 'consumption',
-          action: consumedAction,
+          actionName: consumedAction.name,
         };
         sendEvent(response, res);
       }
     } catch (err) {
       //if customError, send error message to the client and consume the next action
       if (err instanceof CustomError) {
-        const response: ConsumedActionResponse = {
-          type: 'error',
-          message: err.message,
-        };
+        let response: ConsumeActionResponse;
+        if(err instanceof NoCreditRemaining){
+          response ={
+            type: 'noCredits',
+            actionName: err.actionName,
+          }
+        }else{
+          response ={
+            type: 'error',
+            message: err.message,
+          }
+
+        }
+          
         sendEvent(response, res);
         consumeAction();
       }
@@ -45,7 +55,7 @@ router.get('/actions', (req, res) => {
 
   const resetActions = () => {
     queueStore.resetActions()
-    const response: ConsumedActionResponse = {
+    const response: ConsumeActionResponse = {
       type: 'reset',
       actionsList: queueStore.getActions(),
     };
@@ -54,11 +64,11 @@ router.get('/actions', (req, res) => {
 
   const actionConsumptionLoopId = setInterval(() => {
     consumeAction();
-  }, 3000);
+  }, 1000);
 
   const actionCreditsResetLoopId = setInterval(() => {
     resetActions();
-  }, 10000);
+  }, 60000);
 
   // Cleans up when the client closes the connection
   req.on('close', () => {

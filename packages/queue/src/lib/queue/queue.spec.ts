@@ -51,6 +51,6 @@ describe('queue constructor', () => {
     expect(queue.getList()).toEqual([actionA])
 
     expect(()=> queue.consumeFirstActionCredits()).toThrow(NoCreditRemaining)
-    expect(()=> queue.consumeFirstActionCredits()).toBeNull()
+    expect(queue.consumeFirstActionCredits()).toBeUndefined()
   })
 });

@@ -1,13 +1,16 @@
-import { ConsumedActionResponse, QueueStateResponse } from '@test-boilerplate/responses';
+import { ConsumeActionResponse, QueueStateResponse } from '@test-boilerplate/responses';
 import { ActionAttributes } from 'packages/queue/src/lib/action/action';
 import { useContext, useEffect } from 'react';
 import { QueueContext } from './contexts/queueContext';
+import { ActionCard } from './components/action-card';
+import { Queue } from './components/queue';
+import { NoCreditRemaining } from '@test-boilerplate/errors';
 
 export const App = () => {
   // const [actions, setActions] = useState<Action[]>([])
   // const [queue, setQueue] = useState<Queue>()
 
-  const { setActions, setQueue, consumeFirstActionCredits } = useContext(QueueContext)
+  const { setActions, setQueue, consumeFirstActionCredits, removeActionOccurrences } = useContext(QueueContext)
 
   useEffect(() => {
     //init the state of actions and queue
@@ -21,15 +24,23 @@ export const App = () => {
       // listen to action comsumption events from the server
       const sse = new EventSource('http://localhost:3000/events/actions')
       sse.onmessage = e => {
-        const response: ConsumedActionResponse = JSON.parse(e.data)
+        const response: ConsumeActionResponse = JSON.parse(e.data)
 
         switch (response.type) {
           case "error":
             console.error(response.message)
             break;
 
+          case "noCredits":
+            console.error(new NoCreditRemaining(response.actionName))
+            removeActionOccurrences(response.actionName)            
+             break;
+
           case "consumption":
-            consumeFirstActionCredits(response.action.name)
+            console.log("action : ", response.actionName)
+            if(response.actionName) {
+              consumeFirstActionCredits(response.actionName)
+            }
             break;
 
           case "reset":
@@ -44,9 +55,6 @@ export const App = () => {
   }, [])
 
   return (
-
-
-
     <div className="h-screen w-screen bg-gradient-to-r from-sky-100 to-sky-200">
       {/* title of the app  */}
       <div className='bg-gradient-to-r from-violet-300 to-blue-300  p-2 flex flex-col items-center'>
@@ -57,8 +65,12 @@ export const App = () => {
       {/* main content */}
       <div className='px-4'>
 
+
         {/* action queue */}
-        <Queue />
+        <div className='mt-4'>
+          <p className="text-center text-lg font-semibold">Action Queue</p>
+          <Queue />
+        </div>
 
         {/* list of available actions */}
         <div className='pt-4'>
@@ -75,48 +87,14 @@ export const App = () => {
   )
 }
 
-const Queue = () => {
-  const { queue } = useContext(QueueContext)
 
-  return (
-    queue.map((actionName, index) => {
-      return <p key={index}>{actionName}</p>
-    })
-  )
-}
 
-const ActionList = () => {
-  // const { actions } = useContext(QueueContext)
-  const actions : ActionAttributes[] = [
-    { name: "A", credits: 1 },
-    { name: "B", credits: 9 },
-    { name: "C", credits: 9 }
-  ]
+
+export const ActionList = () => {
+  const { actions } = useContext(QueueContext)
   return (
     <div className='flex h-full items-center justify-center flex-wrap gap-6'>
-      {actions.map((action: ActionAttributes) => <ActionCard action={action} />)}
+      {actions.map((action: ActionAttributes) => <ActionCard key={action.name} action={action} />)}
     </div>
   )
-}
-
-const ActionCard = ({ action }: { action: ActionAttributes }) => {
-  const { addAction } = useContext(QueueContext)
-  return (
-    <button className='hover:scale-x-110 transition-transform duration-200 focus:scale-110' onClick={() => addAction(action.name)}>
-      {/* action card */}
-      <div className='bg-white flex flex-col rounded h-24 w-24'>
-        {/* card name header */}
-        <div className='h-8 rounded-t bg-gradient-to-r from-violet-300 to-blue-300 flex justify-center items-center font-bold text-xl text-violet-800'>
-          <label>{action.name}</label>
-        </div>
-        {/* card credits */}
-        <div className='h-full  flex justify-center items-center'>
-          <label className='text-xl font-bold color'>{action.credits}</label>
-        </div>
-      </div>
-
-      {/* <button className="h-14 bg-gradient-to-r from-blue-700 to-teal-500 px-6 py-2 rounded-lg  text-xl font-semibold text-white hover:from-purple-700 hover:to-blue-500 transition-all duration-300">Edit profile</button> */}
-    </button>
-  )
-
 }
