@@ -1,60 +1,18 @@
-import { ConsumeActionResponse, QueueStateResponse } from '@test-boilerplate/responses';
-import { ActionAttributes } from 'packages/queue/src/lib/action/action';
-import { useContext, useEffect } from 'react';
+import { useContext} from 'react';
 import { QueueContext } from './contexts/queueContext';
 import { ActionCard } from './components/action-card';
 import { Queue } from './components/queue';
-import { NoCreditRemaining } from '@test-boilerplate/errors';
+import { ActionEventListener } from './components/action-event-listener';
+import { ActionAttributes } from '@test-boilerplate/queue';
 
 export const App = () => {
   // const [actions, setActions] = useState<Action[]>([])
   // const [queue, setQueue] = useState<Queue>()
 
-  const { setActions, setQueue, consumeFirstActionCredits, removeActionOccurrences } = useContext(QueueContext)
 
-  useEffect(() => {
-    //init the state of actions and queue
-    fetch("http://localhost:3000/").then(res => {
-      res.json().then((data: QueueStateResponse) => {
-        setActions(data.actions);
-        setQueue(data.queue)
-
-      })
-    }).then(() => {
-      // listen to action comsumption events from the server
-      const sse = new EventSource('http://localhost:3000/events/actions')
-      sse.onmessage = e => {
-        const response: ConsumeActionResponse = JSON.parse(e.data)
-
-        switch (response.type) {
-          case "error":
-            console.error(response.message)
-            break;
-
-          case "noCredits":
-            console.error(new NoCreditRemaining(response.actionName))
-            removeActionOccurrences(response.actionName)            
-             break;
-
-          case "consumption":
-            console.log("action : ", response.actionName)
-            if(response.actionName) {
-              consumeFirstActionCredits(response.actionName)
-            }
-            break;
-
-          case "reset":
-            setActions(response.actionsList)
-            break;
-
-        }
-      }
-    }).catch((err: Error) => {
-      console.error("Error while connecting to the server : ", err.message);
-    })
-  }, [])
 
   return (
+    <ActionEventListener>
     <div className="h-screen w-screen bg-gradient-to-r from-sky-100 to-sky-200">
       {/* title of the app  */}
       <div className='bg-gradient-to-r from-violet-300 to-blue-300  p-2 flex flex-col items-center'>
@@ -84,6 +42,7 @@ export const App = () => {
         </div>
       </div>
     </div>
+    </ActionEventListener>
   )
 }
 

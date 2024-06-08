@@ -1,8 +1,7 @@
 import { Request, Response, Router } from 'express';
-import { ErrorResponse } from '@test-boilerplate/responses';
-import { AddActionPayload } from '@test-boilerplate/payloads';
 import queueStore from '../queue-store';
-
+import {AddActionPayload} from "@test-boilerplate/payloads"
+import {ErrorResponse} from "@test-boilerplate/responses"
 const router = Router();
 
 router.post('/add', (req: Request, res: Response) => {
