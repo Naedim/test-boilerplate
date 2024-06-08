@@ -17,13 +17,15 @@ export class WrongAttributes extends CustomError{
 }
 
 export class NoCreditRemaining extends CustomError{
+  public actionName : string;
   constructor(actionName : string){
     super(`no credit remaining for the action ${actionName}`)
+    this.actionName = actionName
   }
 }
 
 export class UnknownAction extends CustomError{
   constructor(actionName : string){
-    super(`An unknown action has been found: ${actionName}`)
+    super(`The action ${actionName} is not known`)
   }
 }

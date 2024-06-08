@@ -1,21 +1,23 @@
 import { Action } from "../action/action";
 
 export class Queue{
-  public list :Action[] = [];
+  private list :Action[] = [];
   
   constructor(list : Action[] = []){
     this.list = list 
   }
 
+  public getList(){
+    return this.list
+  }
   public addAction(action : Action){
     this.list.push(action)
   }
 
-  public consumeFirstActionCredits() : Action | null {
+  public consumeFirstActionCredits() : Action | undefined {
     // if this.list is empty, then this.list.shift() returns undefined
     const action = this.list.shift()
-    if(!action) return null
-    action.consumeCredit()
+    if(action) action.consumeCredit()
     return action
   }
 

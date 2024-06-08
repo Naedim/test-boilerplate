@@ -1,0 +1,19 @@
+{
+  "name": "payloads",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/payloads/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/payloads",
+        "main": "packages/payloads/src/index.ts",
+        "tsConfig": "packages/payloads/tsconfig.lib.json",
+        "assets": ["packages/payloads/*.md"]
+      }
+    }
+  }
+}

@@ -1,4 +1,4 @@
-import {Action } from "@test-boilerplate/queue";
+import { Action, ActionAttributes } from "@test-boilerplate/queue"
 
 /**
  * @field queue : a list of action's names that represent the order of actions in the queue
@@ -6,11 +6,16 @@ import {Action } from "@test-boilerplate/queue";
  */
 export interface QueueStateResponse{
   queue : string[] 
-  actions : Action[]
+  actions : ActionAttributes[]
 }
 
-export type ConsumedActionResponse = 
-|{type : "consumption", action : Action}
+export interface ErrorResponse{
+  error : string
+}
+
+export type ConsumeActionResponse = 
+|{type : "consumption", actionName: Action['name'] | null}
+|{type : "noCredits", actionName: Action['name']}
 |{type : "reset", actionsList : Action[]}
 |{type : "error", message : string }
 

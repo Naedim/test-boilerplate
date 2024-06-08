@@ -1,12 +1,16 @@
 import {NoCreditRemaining, WrongAttributes} from '@test-boilerplate/errors'
 
-export class Action{
+export interface ActionAttributes {
+  name : string;
+  credits : number;
+}
+export class Action implements ActionAttributes{
+
   public name : string;
   public credits : number;
 
   public constructor(name : string, credits : number){
     if(!name)throw new WrongAttributes("action can't have a empty string as name")
-    if(credits <= 0)throw new WrongAttributes("action must start a starting number of credits greater then 0")
     this.name = name;
     this.credits = credits;
   }
