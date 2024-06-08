@@ -5,7 +5,7 @@ import { QueueStateResponse } from '@test-boilerplate/responses';
 import fs from 'fs';
 
 const dataFile = 'data.json';
-const maxCredit = 10;
+const maxCredit = 2;
 
 /**
  * @param max max expectedValue
@@ -69,8 +69,6 @@ class QueueStore {
     if(!action) throw new UnknownAction(actionName);
     
     this.queue.addAction(action);
-    console.log("added action : ", actionName)
-    console.log("queue : ", this.queue)
     this.save();
     return;
   }
@@ -82,7 +80,6 @@ class QueueStore {
     this.save()
   }
   public save() {
-    // console.log("Saving state : ", this.getState())
     fs.writeFileSync(dataFile, JSON.stringify(this.getState()), 'utf-8');
   }
 

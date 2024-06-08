@@ -14,9 +14,7 @@ router.post('/add', (req: Request, res: Response) => {
     res.status(400).json(response);
   }
 
-  console.log("receive request to add action : ",payload.actionName )
   queueStore.addAction(payload.actionName)
-  console.log("returning 200")
   res.sendStatus(200)
 
 });
