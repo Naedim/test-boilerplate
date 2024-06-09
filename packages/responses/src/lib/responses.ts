@@ -13,9 +13,15 @@ export interface ErrorResponse{
   error : string
 }
 
-export type ConsumeActionResponse = 
-|{type : "consumption", actionName: Action['name'] | null}
-|{type : "noCredits", actionName: Action['name']}
-|{type : "reset", actionsList : Action[]}
-|{type : "error", message : string }
+export type ActionEventResponse = 
+ActionEventConsumptionResponse
+|ActionEventNoCreditResponse
+|ActionEventResetResponse
+|ActionEventErrorResponse
 
+
+
+export type ActionEventConsumptionResponse = {type : "consumption", actionName: Action['name'] | null}
+export type  ActionEventNoCreditResponse= {type : "noCredits", actionName: Action['name']}
+export type  ActionEventResetResponse= {type : "reset", actionsList : Action[]}
+export type  ActionEventErrorResponse= {type : "error", message : string }

@@ -1,8 +1,7 @@
 import { Request, Response, Router } from 'express';
-import { ErrorResponse } from '@test-boilerplate/responses';
-import { AddActionPayload } from '@test-boilerplate/payloads';
 import queueStore from '../queue-store';
-
+import {AddActionPayload} from "@test-boilerplate/payloads"
+import {ErrorResponse} from "@test-boilerplate/responses"
 const router = Router();
 
 router.post('/add', (req: Request, res: Response) => {
@@ -15,9 +14,7 @@ router.post('/add', (req: Request, res: Response) => {
     res.status(400).json(response);
   }
 
-  console.log("receive request to add action : ",payload.actionName )
   queueStore.addAction(payload.actionName)
-  console.log("returning 200")
   res.sendStatus(200)
 
 });

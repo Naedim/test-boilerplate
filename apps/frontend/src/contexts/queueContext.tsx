@@ -28,7 +28,6 @@ export const QueueProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     };
 
     const consumeFirstActionCredits = (actionName: string) => {
-        console.log("actionName : ", actionName)
 
         //removing the first action which name is actionName and all the ones before
         setQueue((prevQueue) => {
@@ -56,6 +55,7 @@ export const QueueProvider: React.FC<{ children: React.ReactNode }> = ({ childre
      */
     const removeActionOccurrences = (actionName : string)=>{
 
+        console.log("remove action ocurrences")
         setQueue((prevQueue) => {
             const actionIndex = prevQueue.findIndex((name) => name !== actionName);
             if(actionIndex === undefined) return []

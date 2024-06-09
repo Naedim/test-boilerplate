@@ -16,7 +16,6 @@ export const ActionCard = ({ action }: { action: ActionAttributes }) => {
     
     axios.post("http://localhost:3000/action/add", payload, config).then(() => {
       
-    console.log("gonna add")
     addAction(actionName)
 
     }).catch((err) => console.error(err)

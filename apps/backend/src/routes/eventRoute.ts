@@ -1,4 +1,4 @@
-import { ConsumeActionResponse } from '@test-boilerplate/responses';
+import { ActionEventResponse } from '@test-boilerplate/responses';
 import { Router } from 'express';
 import queueStore from '../queue-store';
 import { CustomError, NoCreditRemaining } from '@test-boilerplate/errors';
@@ -6,7 +6,7 @@ import { CustomError, NoCreditRemaining } from '@test-boilerplate/errors';
 const router = Router();
 
 //function used to send event to the client
-const sendEvent = (data: ConsumeActionResponse, res) => {
+const sendEvent = (data: ActionEventResponse, res) => {
   res.write(`data: ${JSON.stringify(data)}\n\n`);
 };
 
@@ -21,7 +21,7 @@ router.get('/actions', (req, res) => {
     try {
       const consumedAction = queueStore.consumeAction();
       if (consumedAction) {
-        const response: ConsumeActionResponse = {
+        const response: ActionEventResponse = {
           type: 'consumption',
           actionName: consumedAction.name,
         };
@@ -30,7 +30,7 @@ router.get('/actions', (req, res) => {
     } catch (err) {
       //if customError, send error message to the client and consume the next action
       if (err instanceof CustomError) {
-        let response: ConsumeActionResponse;
+        let response: ActionEventResponse;
         if(err instanceof NoCreditRemaining){
           response ={
             type: 'noCredits',
@@ -55,7 +55,7 @@ router.get('/actions', (req, res) => {
 
   const resetActions = () => {
     queueStore.resetActions()
-    const response: ConsumeActionResponse = {
+    const response: ActionEventResponse = {
       type: 'reset',
       actionsList: queueStore.getActions(),
     };
@@ -68,11 +68,10 @@ router.get('/actions', (req, res) => {
 
   const actionCreditsResetLoopId = setInterval(() => {
     resetActions();
-  }, 60000);
+  }, 10000);
 
   // Cleans up when the client closes the connection
   req.on('close', () => {
-    console.log('Connection was closed');
     clearInterval(actionCreditsResetLoopId);
     clearInterval(actionConsumptionLoopId);
     res.end();

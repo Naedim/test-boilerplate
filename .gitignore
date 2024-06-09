@@ -39,6 +39,3 @@ testem.log
 Thumbs.db
 
 .nx/cache
-
-#data file
-data.json

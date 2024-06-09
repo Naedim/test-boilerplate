@@ -1,8 +1,1 @@
-{
-  "queue": ["A", "A", "A", "B", "B", "C", "C"],
-  "actions": [
-    { "name": "A", "credits": 1 },
-    { "name": "B", "credits": 9 },
-    { "name": "C", "credits": 9 }
-  ]
-}
+{"queue":[],"actions":[{"name":"A","credits":2},{"name":"B","credits":2},{"name":"C","credits":2},{"name":"D","credits":2},{"name":"E","credits":2},{"name":"F","credits":2}]}
