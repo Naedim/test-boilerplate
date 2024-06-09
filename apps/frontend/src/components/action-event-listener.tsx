@@ -1,4 +1,3 @@
-import { NoCreditRemaining } from "@test-boilerplate/errors";
 import { ActionEventResponse} from "@test-boilerplate/responses";
 import { ReactNode, useContext, useEffect, useState } from "react";
 import { QueueContext } from "../contexts/queueContext";
@@ -42,6 +41,7 @@ export const ActionEventListener: React.FC<{ children: ReactNode }> = ({ childre
 
                 switch (response.type) {
                     case "consumption":
+                        console.log("consumption of ", response.actionName)
                         if (response.actionName) {
                             consumeFirstActionCredits()
                         }
@@ -49,7 +49,7 @@ export const ActionEventListener: React.FC<{ children: ReactNode }> = ({ childre
                         break;
 
                     case "noCredits":
-                        console.log(new NoCreditRemaining(response.actionName))
+                        console.log("nocredit")
                         removeActionOccurrences(response.actionName)
                         onEvent({ title: `No credit for action ${response.actionName}`, message: `Removing all the following ${response.actionName} action from the list` })
                         break;

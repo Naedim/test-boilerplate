@@ -71,7 +71,6 @@ class QueueStore {
     
     this.queue.addAction(action);
     this.save();
-    console.log("queueState : ", this.getState())
     return;
   }
 

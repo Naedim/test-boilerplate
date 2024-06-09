@@ -63,15 +63,8 @@ export const QueueProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     };
 
     const resetActionsState = (newActions: ActionState[]) => {
-        const updatedActions = actionsRef.current.map(oldAction => {
-            const correspondingAction = newActions.find(newAction => newAction.name === oldAction.name);
-            if (!correspondingAction) return oldAction;
-
-            return new Action(oldAction.name, correspondingAction.credits)
-        });
-
-        actionsRef.current = updatedActions;
-        setActionsState(updatedActions.map(ac => ({ name: ac.name, credits: ac.credits })));
+        actionsRef.current = newActions.map(ac => new Action(ac.name, ac.credits)) 
+        setActionsState(getActionsStates())
     };
 
     const initData = (data: QueueStateData) => {

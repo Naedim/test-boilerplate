@@ -7,6 +7,8 @@ const router = Router();
 
 //function used to send event to the client
 const sendEvent = (data: ActionEventResponse, res) => {
+
+  console.log(data)
   res.write(`data: ${JSON.stringify(data)}\n\n`);
 };
 
@@ -71,7 +73,7 @@ router.get('/actions', (req, res) => {
 
   const actionCreditsResetLoopId = setInterval(() => {
     resetActions();
-  }, 30000);
+  }, 15000);
 
   // Cleans up when the client closes the connection
   req.on('close', () => {
