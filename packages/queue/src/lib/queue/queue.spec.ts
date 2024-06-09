@@ -53,4 +53,13 @@ describe('queue constructor', () => {
     expect(()=> queue.consumeFirstActionCredits()).toThrow(NoCreditRemaining)
     expect(queue.consumeFirstActionCredits()).toBeUndefined()
   })
+
+  it('removal of action occurences', () => {
+    const actionList =  [actionA, actionA, actionB, actionA]
+    const queue = new Queue(actionList)
+    queue.removeActionOccurrences(actionA.name)
+    const expectedList = [actionB, actionA]
+    expect(queue.getList()).toEqual(expectedList)
+  })
+
 });

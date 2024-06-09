@@ -1,6 +1,7 @@
 // import { UnknownActionInSavedueue } from '@test-boilerplate/errors';
 import { UnknownAction } from '@test-boilerplate/errors';
-import { Action, Queue } from '@test-boilerplate/queue';
+import { generateQueueAndAction } from '@test-boilerplate/helpers';
+import { Action, Queue, QueueStateData } from '@test-boilerplate/queue';
 import { QueueStateResponse } from '@test-boilerplate/responses';
 import fs from 'fs';
 
@@ -79,6 +80,12 @@ class QueueStore {
     );
     this.save()
   }
+
+  public removeActionOccurences(actionName : string){
+    this.queue.removeActionOccurrences(actionName)
+    this.save()
+  }
+
   public save() {
     fs.writeFileSync(dataFile, JSON.stringify(this.getState()), 'utf-8');
   }
@@ -89,43 +96,20 @@ class QueueStore {
    * an error message is loged and the action is skipped from the list
    */
   public initData() {
-    if (!fs.existsSync(dataFile)) {
-      this.actions = defaultActions;
-      this.queue = new Queue()
-      return
-    }
-      this.actions = defaultActions;
-    const data: QueueStateResponse = JSON.parse(
+    // if (!fs.existsSync(dataFile)) {
+    //   this.actions = defaultActions;
+    //   this.queue = new Queue()
+    //   return
+    // }
+    this.actions = defaultActions;
+    const data: QueueStateData = JSON.parse(
       fs.readFileSync(dataFile, 'utf-8')
     );
 
-    // some actions of the save file may not be part of the accepted actions labels of the app, checking for that
-    //filtering all the saved actions that are part of the default actions names
-    const acceptedActionsNames = defaultActions.map((ac) => ac.name);
-    const acceptedSavedActions = data.actions.filter((savedAction) =>
-      acceptedActionsNames.includes(savedAction.name)
-    );
+    const res = generateQueueAndAction(data)
 
-    //generating the list of existing Actions
-    this.actions = acceptedSavedActions.map(
-      (ac) => new Action(ac.name, ac.credits)
-    );
-
-    //now we generate a list of Action's references, then instantiate a new Queue with it
-    const QueueActions: Action[] = [];
-    data.queue.forEach((actionName) => {
-      const actionReference = this.actions.find(
-        (action) => action.name === actionName
-      );
-      if (!actionReference) {
-        // console.error(new UnknownAction(actionName));
-        console.error(`An unknown action has been found: ${actionName}`);
-        return;
-      }
-      QueueActions.push(actionReference);
-    });
-
-    this.queue = new Queue(QueueActions);
+    this.actions = res.actions
+    this.queue = res.queue
   }
 }
 

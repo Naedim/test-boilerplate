@@ -1,23 +1,21 @@
 import axios from "axios";
 import { useContext } from "react";
-import {AddActionPayload} from "@test-boilerplate/payloads"
-import { ActionAttributes } from "packages/queue/src/lib/action/action";
+import { AddActionPayload } from "@test-boilerplate/payloads"
+import { ActionState } from "packages/queue/src/lib/action/action";
 import { QueueContext } from "../contexts/queueContext";
-export const ActionCard = ({ action }: { action: ActionAttributes }) => {
+export const ActionCard = ({ action }: { action: ActionState }) => {
   const { addAction } = useContext(QueueContext)
 
   const manageAddAction = (actionName: string) => {
     const payload: AddActionPayload = { actionName: actionName }
     const config = {
       headers: {
-      'Content-Type': 'application/json',
-    },
+        'Content-Type': 'application/json',
+      },
     };
-    
-    axios.post("http://localhost:3000/action/add", payload, config).then(() => {
-      
-    addAction(actionName)
 
+    axios.post("http://localhost:3000/action/add", payload, config).then(() => {
+      addAction(actionName)
     }).catch((err) => console.error(err)
     )
   }

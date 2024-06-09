@@ -3,14 +3,9 @@ import { QueueContext } from './contexts/queueContext';
 import { ActionCard } from './components/action-card';
 import { Queue } from './components/queue';
 import { ActionEventListener } from './components/action-event-listener';
-import { ActionAttributes } from '@test-boilerplate/queue';
+import { ActionState } from '@test-boilerplate/queue';
 
 export const App = () => {
-  // const [actions, setActions] = useState<Action[]>([])
-  // const [queue, setQueue] = useState<Queue>()
-
-
-
   return (
     <ActionEventListener>
       <div className="h-screen w-screen bg-gradient-to-r from-sky-100 to-sky-200">
@@ -45,14 +40,11 @@ export const App = () => {
   )
 }
 
-
-
-
 export const ActionList = () => {
-  const { actions } = useContext(QueueContext)
+  const { actionsState } = useContext(QueueContext)
   return (
     <div className='flex h-full items-center justify-center flex-wrap gap-6'>
-      {actions.map((action: ActionAttributes) => <ActionCard key={action.name} action={action} />)}
+      {actionsState.map((action: ActionState) => <ActionCard key={action.name} action={action} />)}
     </div>
   )
 }
