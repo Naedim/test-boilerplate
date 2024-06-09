@@ -9,7 +9,6 @@ const router = Router();
 //function used to send event to the client
 const sendEvent = (data: ActionEventResponse, res) => {
 
-  console.log(data)
   res.write(`data: ${JSON.stringify(data)}\n\n`);
 };
 
@@ -20,6 +19,13 @@ router.get(EVENTS_ACTIONS, (req, res) => {
   res.setHeader('Connection', 'keep-alive');
 
 
+  /**
+   * consume an action from the queueStore. 
+   * If an action lacks credits : 
+   * - removes the next occurences of the action 
+   * - send an noCredits event to the client 
+   * - tries again
+   */
   const consumeAction = () => {
     try {
       const consumedAction = queueStore.consumeAction();

@@ -96,12 +96,11 @@ class QueueStore {
    * an error message is loged and the action is skipped from the list
    */
   public initData() {
-    // if (!fs.existsSync(dataFile)) {
-    //   this.actions = defaultActions;
-    //   this.queue = new Queue()
-    //   return
-    // }
-    this.actions = defaultActions;
+    if (!fs.existsSync(dataFile)) {
+      this.actions = defaultActions;
+      this.queue = new Queue()
+      return
+    }
     const data: QueueStateData = JSON.parse(
       fs.readFileSync(dataFile, 'utf-8')
     );

@@ -11,7 +11,7 @@ export const QueueContext = createContext<{
     addAction: (actionName: string) => void;
     consumeFirstActionCredits: () => void;
     removeActionOccurrences: (actionName: string) => void;
-    resetActionsState: (newActions: ActionState[]) => void;
+    resetActionsCredits: (newActions: ActionState[]) => void;
     initData: (data: QueueStateData) => void;
 }>({
     actionsState: [],
@@ -21,10 +21,15 @@ export const QueueContext = createContext<{
     addAction: () => { return },
     consumeFirstActionCredits: () => { return },
     removeActionOccurrences: () => { return },
-    resetActionsState: () => { return },
+    resetActionsCredits: () => { return },
     initData: () => { return }
 });
 
+/**
+ * 
+ * Context allowing to share and manipulate the actions and queue states to the entire app 
+ * @returns 
+ */
 export const QueueProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const actionsRef = useRef<Action[]>([]);
     const queueRef = useRef<Queue>(new Queue());
@@ -43,7 +48,6 @@ export const QueueProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     const addAction = (actionName: string) => {
         const action = actionsRef.current.find(ac => ac.name === actionName);
         if (!action) {
-            console.log("couldn't find the action : ", actionName);
             return;
         } else {
             queueRef.current?.addAction(action);
@@ -52,18 +56,38 @@ export const QueueProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     };
 
     const consumeFirstActionCredits = () => {
-            queueRef.current.consumeFirstActionCredits();
-            setActionsState(getActionsStates());
-            setActionsQueue(getActionQueueNames());
+        queueRef.current.consumeFirstActionCredits();
+        setActionsState(getActionsStates());
+        setActionsQueue(getActionQueueNames());
     };
 
+    /**
+     * 
+     * Assure the behavior of skipping to the next action when an initial action lacks credits 
+     * @param actionName the action name we want to remove the following occurences of
+     *
+     * remove all occurences of 'actionName' until another value is found
+     */
     const removeActionOccurrences = (actionName: string) => {
-            queueRef.current.removeActionOccurrences(actionName);
-            setActionsQueue(getActionQueueNames());
+        queueRef.current.removeActionOccurrences(actionName);
+        setActionsQueue(getActionQueueNames());
+        setActionsState(getActionsStates());
     };
 
-    const resetActionsState = (newActions: ActionState[]) => {
-        actionsRef.current = newActions.map(ac => new Action(ac.name, ac.credits)) 
+    const resetActionsCredits = (newActions: ActionState[]) => {
+
+        //useRef require not to replace the array but to change the original values if needed
+        //otherwise actionRef isn't actualized for react
+        actionsRef.current.forEach(ac => { 
+            const correspondingAction = newActions.find(newAc => newAc.name === ac.name)
+            if(correspondingAction){
+                ac.credits = correspondingAction.credits 
+            }
+            else{
+                console.error("didn't find corresponding action : ", ac.name)
+            }
+        })
+
         setActionsState(getActionsStates())
     };
 
@@ -76,7 +100,7 @@ export const QueueProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     };
 
     return (
-        <QueueContext.Provider value={{ actionsState, setActionsState, actionsQueue, setActionsQueue, addAction, consumeFirstActionCredits, removeActionOccurrences, resetActionsState, initData }}>
+        <QueueContext.Provider value={{ actionsState, setActionsState, actionsQueue, setActionsQueue, addAction, consumeFirstActionCredits, removeActionOccurrences, resetActionsCredits, initData }}>
             {children}
         </QueueContext.Provider>
     );
