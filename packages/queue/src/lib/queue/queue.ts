@@ -40,7 +40,7 @@ export class Queue {
     const otherActionIndex = this.list.findIndex(
       (action) => action.name !== actionName
     );
-    if (!otherActionIndex) {
+    if (otherActionIndex === -1) {
       this.list = [];
       return;
     }
