@@ -1,10 +1,10 @@
 import {NoCreditRemaining, WrongAttributes} from '@test-boilerplate/errors'
 
-export interface ActionAttributes {
+export interface ActionState {
   name : string;
   credits : number;
 }
-export class Action implements ActionAttributes{
+export class Action implements ActionState{
 
   public name : string;
   public credits : number;

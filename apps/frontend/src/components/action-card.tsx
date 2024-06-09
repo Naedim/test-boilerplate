@@ -1,9 +1,9 @@
 import axios from "axios";
 import { useContext } from "react";
 import {AddActionPayload} from "@test-boilerplate/payloads"
-import { ActionAttributes } from "packages/queue/src/lib/action/action";
+import { ActionState } from "packages/queue/src/lib/action/action";
 import { QueueContext } from "../contexts/queueContext";
-export const ActionCard = ({ action }: { action: ActionAttributes }) => {
+export const ActionCard = ({ action }: { action: ActionState }) => {
   const { addAction } = useContext(QueueContext)
 
   const manageAddAction = (actionName: string) => {

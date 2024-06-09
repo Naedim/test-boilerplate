@@ -1,71 +1,91 @@
-import { ActionAttributes } from "packages/queue/src/lib/action/action";
-import { createContext, useState } from "react";
+import { generateQueueAndAction } from "@test-boilerplate/helpers";
+import { ActionState, QueueStateData } from "@test-boilerplate/queue";
+import { Queue, Action } from "@test-boilerplate/queue";
+import { createContext, useState, useRef } from "react";
 
 export const QueueContext = createContext<{
-    actions: ActionAttributes[];
-    setActions: React.Dispatch<React.SetStateAction<ActionAttributes[]>>;
-    queue: string[];
-    setQueue: React.Dispatch<React.SetStateAction<string[]>>;
+    actionsState: ActionState[];
+    setActionsState: React.Dispatch<React.SetStateAction<ActionState[]>>;
+    actionsQueue: string[];
+    setActionsQueue: React.Dispatch<React.SetStateAction<string[]>>;
     addAction: (actionName: string) => void;
-    consumeFirstActionCredits: (actionName: string) => void;
-    removeActionOccurrences: (actionName : string) =>void;
+    consumeFirstActionCredits: () => void;
+    removeActionOccurrences: (actionName: string) => void;
+    resetActionsState: (newActions: ActionState[]) => void;
+    initData: (data: QueueStateData) => void;
 }>({
-    actions: [],
-    setActions: () => [],
-    queue: [],
-    setQueue: () => [],
+    actionsState: [],
+    setActionsState: () => [],
+    actionsQueue: [],
+    setActionsQueue: () => [],
     addAction: () => { return },
     consumeFirstActionCredits: () => { return },
-    removeActionOccurrences: () =>{return}
+    removeActionOccurrences: () => { return },
+    resetActionsState: () => { return },
+    initData: () => { return }
 });
 
 export const QueueProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const [actions, setActions] = useState<ActionAttributes[]>([]);
-    const [queue, setQueue] = useState<string[]>([]);
+    const actionsRef = useRef<Action[]>([]);
+    const queueRef = useRef<Queue>(new Queue());
+
+    const [actionsState, setActionsState] = useState<ActionState[]>([]);
+    const [actionsQueue, setActionsQueue] = useState<string[]>([]);
+
+    const getActionQueueNames = (): string[] => {
+        return queueRef.current.getList().map(ac => ac.name)
+    };
+
+    const getActionsStates = (): ActionState[] => {
+        return actionsRef.current.map(ac => ({ name: ac.name, credits: ac.credits }));
+    };
 
     const addAction = (actionName: string) => {
-        setQueue([...queue, actionName]);
+        const action = actionsRef.current.find(ac => ac.name === actionName);
+        if (!action) {
+            console.log("couldn't find the action : ", actionName);
+            return;
+        } else {
+            queueRef.current?.addAction(action);
+        }
+        setActionsQueue(getActionQueueNames());
     };
 
-    const consumeFirstActionCredits = (actionName: string) => {
-
-        //removing the first action which name is actionName and all the ones before
-        setQueue((prevQueue) => {
-            const actionIndex = prevQueue.findIndex((name) => name === actionName);
-            const newQueue = prevQueue.slice(actionIndex + 1); // Create a new array
-            return newQueue;
-        });
-
-        //decreasing the action's credit number
-        setActions((prevActions) => {
-            const newActions = prevActions
-            const concernedAction = newActions.find(ac => ac.name === actionName)
-            if (!concernedAction) { 
-                console.error(`couldn't find the action when decreasing the credit : ${actionName}`) 
-            } else {
-                concernedAction.credits--
-            }
-            return newActions
-        })
+    const consumeFirstActionCredits = () => {
+            queueRef.current.consumeFirstActionCredits();
+            setActionsState(getActionsStates());
+            setActionsQueue(getActionQueueNames());
     };
 
-    /**
-     * remove all occurence of the given action until the list is empty 
-     * or another action is found
-     */
-    const removeActionOccurrences = (actionName : string)=>{
+    const removeActionOccurrences = (actionName: string) => {
+            queueRef.current.removeActionOccurrences(actionName);
+            setActionsQueue(getActionQueueNames());
+    };
 
-        console.log("remove action ocurrences")
-        setQueue((prevQueue) => {
-            const actionIndex = prevQueue.findIndex((name) => name !== actionName);
-            if(actionIndex === undefined) return []
-            return prevQueue.slice(actionIndex + 1); // Create a new array
+    const resetActionsState = (newActions: ActionState[]) => {
+        const updatedActions = actionsRef.current.map(oldAction => {
+            const correspondingAction = newActions.find(newAction => newAction.name === oldAction.name);
+            if (!correspondingAction) return oldAction;
+
+            return new Action(oldAction.name, correspondingAction.credits)
         });
-    }
+
+        actionsRef.current = updatedActions;
+        setActionsState(updatedActions.map(ac => ({ name: ac.name, credits: ac.credits })));
+    };
+
+    const initData = (data: QueueStateData) => {
+        const generation = generateQueueAndAction(data, undefined);
+        actionsRef.current = generation.actions;
+        queueRef.current = generation.queue;
+        setActionsState(generation.actions.map(ac => ({ name: ac.name, credits: ac.credits })));
+        setActionsQueue(generation.queue.getList().map(ac => ac.name));
+    };
 
     return (
-        <QueueContext.Provider value={{ actions, setActions, queue, setQueue, addAction, consumeFirstActionCredits, removeActionOccurrences}}>
+        <QueueContext.Provider value={{ actionsState, setActionsState, actionsQueue, setActionsQueue, addAction, consumeFirstActionCredits, removeActionOccurrences, resetActionsState, initData }}>
             {children}
         </QueueContext.Provider>
     );
 };
+

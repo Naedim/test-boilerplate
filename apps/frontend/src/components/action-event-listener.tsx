@@ -1,9 +1,10 @@
 import { NoCreditRemaining } from "@test-boilerplate/errors";
-import { ActionEventResponse, QueueStateResponse } from "@test-boilerplate/responses";
+import { ActionEventResponse} from "@test-boilerplate/responses";
 import { ReactNode, useContext, useEffect, useState } from "react";
 import { QueueContext } from "../contexts/queueContext";
 import * as Toast from '@radix-ui/react-toast';
 import './styles.css'
+import { QueueStateData } from "@test-boilerplate/queue";
 
 interface EventToastInfos {
     title: string,
@@ -16,7 +17,7 @@ export const ActionEventListener: React.FC<{ children: ReactNode }> = ({ childre
     const [toasterInfos, setToasterInfos] = useState<EventToastInfos>({ title: "", message: "" })
 
     const onEvent = (toastInfos: EventToastInfos) => {
-        console.log("calling onEvent")
+        // console.log("calling onEvent")
         setOpen(false);
         setTimeout(() => {
             setToasterInfos(toastInfos)
@@ -24,16 +25,14 @@ export const ActionEventListener: React.FC<{ children: ReactNode }> = ({ childre
         }, 100)
     }
 
-    const { setActions, setQueue, consumeFirstActionCredits, removeActionOccurrences } = useContext(QueueContext)
+    const { consumeFirstActionCredits, removeActionOccurrences , initData, resetActionsState} = useContext(QueueContext)
     useEffect(() => {
 
         //init the state of actions and queue
         fetch("http://localhost:3000/").then(res => {
-            console.log("Contacting server")
-            res.json().then((data: QueueStateResponse) => {
-                setActions(data.actions);
-                setQueue(data.queue)
-
+            // console.log("Contacting server")
+            res.json().then((data: QueueStateData) => {
+                initData(data)                
             })
         }).then(() => {
             // listen to action events from the server
@@ -44,19 +43,19 @@ export const ActionEventListener: React.FC<{ children: ReactNode }> = ({ childre
                 switch (response.type) {
                     case "consumption":
                         if (response.actionName) {
-                            consumeFirstActionCredits(response.actionName)
+                            consumeFirstActionCredits()
                         }
                         onEvent({ title: `Consumed action ${response.actionName}`, message: "" })
                         break;
 
                     case "noCredits":
-                        console.error(new NoCreditRemaining(response.actionName))
+                        console.log(new NoCreditRemaining(response.actionName))
                         removeActionOccurrences(response.actionName)
                         onEvent({ title: `No credit for action ${response.actionName}`, message: `Removing all the following ${response.actionName} action from the list` })
                         break;
 
                     case "reset":
-                        setActions(response.actionsList)
+                        resetActionsState(response.actionsList)
                         onEvent({ title: "reset of actions credits", message: "" })
                         break;
 
@@ -66,7 +65,7 @@ export const ActionEventListener: React.FC<{ children: ReactNode }> = ({ childre
                 }
             }
         }).catch((err: Error) => {
-            console.error("Error while connecting to the server : ", err.message);
+            console.log("Error while connecting to the server : ", err.message);
         })
     }, [])
 
@@ -86,7 +85,6 @@ interface EventToastProps {
     infos: EventToastInfos
 }
 const EventToast = (props: EventToastProps) => {
-    console.log("messsage : ", props.infos.message)
     return (
         <>
             <Toast.Root className="ToastRoot" open={props.open} onOpenChange={props.onOpenChange}>

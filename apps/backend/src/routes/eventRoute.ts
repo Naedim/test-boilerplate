@@ -1,7 +1,7 @@
 import { ActionEventResponse } from '@test-boilerplate/responses';
 import { Router } from 'express';
 import queueStore from '../queue-store';
-import { CustomError, NoCreditRemaining } from '@test-boilerplate/errors';
+import { CustomError, GeneralPurposeError, NoCreditRemaining } from '@test-boilerplate/errors';
 
 const router = Router();
 
@@ -36,6 +36,8 @@ router.get('/actions', (req, res) => {
             type: 'noCredits',
             actionName: err.actionName,
           }
+        queueStore.removeActionOccurences(err.actionName)
+
         }else{
           response ={
             type: 'error',
@@ -49,6 +51,7 @@ router.get('/actions', (req, res) => {
       }
       else{
         console.error(err)
+        throw new GeneralPurposeError()
       }
     }
   };
@@ -64,11 +67,11 @@ router.get('/actions', (req, res) => {
 
   const actionConsumptionLoopId = setInterval(() => {
     consumeAction();
-  }, 1000);
+  }, 3000);
 
   const actionCreditsResetLoopId = setInterval(() => {
     resetActions();
-  }, 10000);
+  }, 30000);
 
   // Cleans up when the client closes the connection
   req.on('close', () => {

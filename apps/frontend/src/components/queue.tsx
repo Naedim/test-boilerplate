@@ -2,12 +2,12 @@ import { useContext } from "react"
 import { QueueContext } from "../contexts/queueContext"
 
 export const Queue = () => {
-  const { queue } = useContext(QueueContext)
+  const { actionsQueue } = useContext(QueueContext)
 
   return (
     <div className='h-72 bg-gradient-to-r from-violet-300 to-blue-300 rounded-3xl p-4 flex flex-wrap gap-4 gap-y-1 overflow-auto scroll-m-2'>
 
-      {queue.map((actionName, index) => {
+      {actionsQueue.map((actionName, index) => {
         return <QueueAction key={index} actionName={actionName} />
       })}
     </div>
