@@ -55,11 +55,16 @@ describe('queue constructor', () => {
   })
 
   it('removal of action occurences', () => {
-    const actionList =  [actionA, actionA, actionB, actionA]
-    const queue = new Queue(actionList)
+    let actionList =  [actionA, actionA, actionB, actionA]
+    let queue = new Queue(actionList)
     queue.removeActionOccurrences(actionA.name)
     const expectedList = [actionB, actionA]
     expect(queue.getList()).toEqual(expectedList)
+
+    actionList =  [actionA, actionA, actionA, actionA, actionA]
+    queue = new Queue(actionList)
+    queue.removeActionOccurrences(actionA.name)
+    expect(queue.getList()).toEqual([])
   })
 
 });

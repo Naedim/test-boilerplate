@@ -32,7 +32,6 @@ export const generateQueueAndAction = (
       (action) => action.name === actionName
     );
     if (!actionReference) {
-      console.log(`An unknown action has been found: ${actionName}`);
       return;
     }
     queueActions.push(actionReference);
