@@ -2,6 +2,7 @@ import { ActionEventResponse } from '@test-boilerplate/responses';
 import { Router } from 'express';
 import queueStore from '../queue-store';
 import { CustomError, GeneralPurposeError, NoCreditRemaining } from '@test-boilerplate/errors';
+import { EVENTS_ACTIONS } from '@test-boilerplate/endpoints';
 
 const router = Router();
 
@@ -13,7 +14,7 @@ const sendEvent = (data: ActionEventResponse, res) => {
 };
 
 // send the periodic events to the client (action comsumption or actions's credits resets)
-router.get('/actions', (req, res) => {
+router.get(EVENTS_ACTIONS, (req, res) => {
   res.setHeader('Content-Type', 'text/event-stream');
   res.setHeader('Cache-Control', 'no-cache');
   res.setHeader('Connection', 'keep-alive');

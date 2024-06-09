@@ -2,8 +2,9 @@ import { ActionEventResponse} from "@test-boilerplate/responses";
 import { ReactNode, useContext, useEffect, useState } from "react";
 import { QueueContext } from "../contexts/queueContext";
 import * as Toast from '@radix-ui/react-toast';
-import './styles.css'
 import { QueueStateData } from "@test-boilerplate/queue";
+import { EVENT_ENDPOINT_ACTION, SERVER_URL} from "@test-boilerplate/endpoints";
+import './styles.css' //css for the toaster
 
 interface EventToastInfos {
     title: string,
@@ -28,14 +29,14 @@ export const ActionEventListener: React.FC<{ children: ReactNode }> = ({ childre
     useEffect(() => {
 
         //init the state of actions and queue
-        fetch("http://localhost:3000/").then(res => {
+        fetch(SERVER_URL).then(res => {
             // console.log("Contacting server")
             res.json().then((data: QueueStateData) => {
                 initData(data)                
             })
         }).then(() => {
             // listen to action events from the server
-            const sse = new EventSource('http://localhost:3000/events/actions')
+            const sse = new EventSource(EVENT_ENDPOINT_ACTION)
             sse.onmessage = e => {
                 const response: ActionEventResponse = JSON.parse(e.data)
 

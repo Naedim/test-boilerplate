@@ -3,10 +3,7 @@ import cors from 'cors';
 import { actionRouter } from './routes/actionRoute';
 import QueueStore from './queue-store';
 import { eventRouter } from './routes/eventRoute';
-
-const host = process.env.HOST ?? 'localhost';
-const port = process.env.PORT ? Number(process.env.PORT) : 3001;
-
+import {SERVER_PORT, SERVER_HOST, EVENTS_ENTRY, ACTION_ENTRY} from '@test-boilerplate/endpoints'
 const app = express();
 app.use(express.json())
 app.use(cors());
@@ -15,9 +12,9 @@ app.get('/', (_, res) => {
   res.json(QueueStore.getState());
 });
 
-app.use("/events", eventRouter)
-app.use("/action", actionRouter)
+app.use(EVENTS_ENTRY, eventRouter)
+app.use(ACTION_ENTRY, actionRouter)
 
-app.listen(port, host, () => {
-  console.log(`[ ready ] http://${host}:${port}`);
+app.listen(SERVER_PORT, SERVER_HOST, () => {
+  console.log(`[ ready ] http://${SERVER_HOST}:${SERVER_PORT}`);
 });

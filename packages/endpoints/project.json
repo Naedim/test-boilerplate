@@ -1,0 +1,19 @@
+{
+  "name": "endpoints",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/endpoints/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/endpoints",
+        "main": "packages/endpoints/src/index.ts",
+        "tsConfig": "packages/endpoints/tsconfig.lib.json",
+        "assets": ["packages/endpoints/*.md"]
+      }
+    }
+  }
+}

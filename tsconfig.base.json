@@ -15,6 +15,7 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@test-boilerplate/endpoints": ["packages/endpoints/src/index.ts"],
       "@test-boilerplate/errors": ["packages/errors/src/index.ts"],
       "@test-boilerplate/helpers": ["packages/helpers/src/index.ts"],
       "@test-boilerplate/payloads": ["packages/payloads/src/index.ts"],
