@@ -11,7 +11,7 @@ describe('queue constructor', () => {
     actionA = new Action("A", 1)
     actionB = new Action("B", 2)
   });
-  it('constructor ', () => {
+  test('constructor ', () => {
     const actionList = [actionA, actionB ] 
     
     let queue = new Queue()
@@ -23,7 +23,7 @@ describe('queue constructor', () => {
     expect(queue.getList()).toEqual(actionList)
   });
 
-  it('addition of actions ', () => {
+  test('addition of actions ', () => {
     const queue = new Queue();
     queue.addAction(actionA)
     expect(queue.getList()).toEqual([actionA])
@@ -36,7 +36,7 @@ describe('queue constructor', () => {
   })
 
 
-  it('consumption of credits', () => {
+  test('consumption of credits', () => {
     const actionList =  [actionA, actionB, actionA]
     const queue = new Queue(actionList)
 
@@ -54,7 +54,7 @@ describe('queue constructor', () => {
     expect(queue.consumeFirstActionCredits()).toBeUndefined()
   })
 
-  it('removal of action occurences', () => {
+  test('removal of action occurences', () => {
     let actionList =  [actionA, actionA, actionB, actionA]
     let queue = new Queue(actionList)
     queue.removeActionOccurrences(actionA.name)

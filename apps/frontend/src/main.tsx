@@ -5,18 +5,19 @@ import '../styles/globals.css';
 import { App } from './App';
 import { QueueProvider } from './contexts/queueContext';
 import * as Toast from '@radix-ui/react-toast';
+import { StrictMode } from 'react';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') ?? document.body
 
 );
 root.render(
-  // <StrictMode>
+  <StrictMode>
   <Toast.Provider swipeDirection="right">
 
     <QueueProvider>
       <App />
     </QueueProvider>
   </Toast.Provider>
-  // </StrictMode>
+  </StrictMode>
 );
