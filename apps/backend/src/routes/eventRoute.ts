@@ -1,11 +1,15 @@
+import * as dotenv from 'dotenv'
 import { ActionEventResponse } from '@test-boilerplate/responses';
 import { Router } from 'express';
 import queueStore from '../queue-store';
 import { CustomError, GeneralPurposeError, NoCreditRemaining } from '@test-boilerplate/errors';
 import { EVENTS_ACTIONS } from '@test-boilerplate/endpoints';
 
-const router = Router();
+dotenv.config()
+const ACTION_CONSUMPTION_INTERVAL = process.env.ACTION_CONSUMPTION_INTERVAL  as unknown as number|| 15000 
+const ACTION_RESET_INTERVAL = process.env.ACTION_RESET_INTERVAL as unknown as number|| 600000
 
+const router = Router();
 //function used to send event to the client
 const sendEvent = (data: ActionEventResponse, res) => {
 
@@ -76,11 +80,11 @@ router.get(EVENTS_ACTIONS, (req, res) => {
 
   const actionConsumptionLoopId = setInterval(() => {
     consumeAction();
-  }, 3000);
+  }, ACTION_CONSUMPTION_INTERVAL);
 
   const actionCreditsResetLoopId = setInterval(() => {
     resetActions();
-  }, 15000);
+  }, ACTION_RESET_INTERVAL);
 
   // Cleans up when the client closes the connection
   req.on('close', () => {
