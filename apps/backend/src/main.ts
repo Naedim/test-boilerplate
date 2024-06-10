@@ -4,6 +4,8 @@ import { actionRouter } from './routes/actionRoute';
 import QueueStore from './queue-store';
 import { eventRouter } from './routes/eventRoute';
 import {SERVER_PORT, SERVER_HOST, EVENTS_ENTRY, ACTION_ENTRY} from '@test-boilerplate/endpoints'
+
+
 const app = express();
 app.use(express.json())
 app.use(cors());
@@ -18,3 +20,5 @@ app.use(ACTION_ENTRY, actionRouter)
 app.listen(SERVER_PORT, SERVER_HOST, () => {
   console.log(`[ ready ] http://${SERVER_HOST}:${SERVER_PORT}`);
 });
+
+export default app
