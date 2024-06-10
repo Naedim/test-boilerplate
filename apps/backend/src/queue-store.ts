@@ -1,3 +1,4 @@
+import * as dotenv from 'dotenv'
 // import { UnknownActionInSavedueue } from '@test-boilerplate/errors';
 import { UnknownAction } from '@test-boilerplate/errors';
 import { generateQueueAndAction } from '@test-boilerplate/helpers';
@@ -5,8 +6,10 @@ import { Action, Queue, QueueStateData } from '@test-boilerplate/queue';
 import { QueueStateResponse } from '@test-boilerplate/responses';
 import fs from 'fs';
 
-const dataFile = 'data.json';
-const maxCredit = 2;
+dotenv.config()
+
+const dataFile = process.env.QUEUE_STORE_SAVE_PATH as unknown as string;
+const maxCredit = process.env.MAX_ACTION_CREDIT as unknown as number;
 
 /**
  * @param max max expectedValue
