@@ -10,9 +10,15 @@ Enhance your Nx experience by installing [Nx Console](https://nx.dev/nx-console)
 provides an interactive UI to view your projects, run tasks, generate code, and more! Available for VSCode, IntelliJ and
 comes with a LSP for Vim users.
 
-## Start the application
+## Start the backend
 
 Run `npx nx serve backend` to start the development server. Happy coding!
+Run `npx nx start backend` to start the development server. Happy coding!
+
+## Start the frontend
+
+Run `npx nx serve backend` to start the development server. Happy coding!
+Run `npx nx start frontend` to start the development server. Happy coding!
 
 ## Build for production
 
