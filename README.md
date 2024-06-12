@@ -12,12 +12,10 @@ comes with a LSP for Vim users.
 
 ## Start the backend
 
-Run `npx nx serve backend` to start the development server. Happy coding!
-Run `npx nx start backend` to start the development server. Happy coding!
+Run `npx nx serve backend` or `npx nx start backend` to start the development server. Happy coding!
 
 ## Start the frontend
 
-Run `npx nx serve backend` to start the development server. Happy coding!
 Run `npx nx start frontend` to start the development server. Happy coding!
 
 ## Build for production
